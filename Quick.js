@@ -265,7 +265,101 @@
         }
     });
 
-    //事件操作....
+    
+    //事件操作
+    Quick.fn.extend({
+       on:function (types, func) {
+           return this.each(function(){
+               var that = this;
+               types.split(" ").forEach(function(v,i){
+                    that.addEventListener(v,func)
+               });
+           });
+       }
+    });
+Quick.each([
+    "onabort", "onblur", "oncancel", "oncanplay", "oncanplaythrough", "onchange",
+    "onclick", "onclose", "oncontextmenu", "oncuechange", "ondblclick", "ondrag",
+    "ondragend", "ondragenter", "ondragleave", "ondragover", "ondragstart", "ondrop",
+    "ondurationchange", "onemptied", "onended", "onerror", "onfocus", "oninput",
+    "oninvalid", "onkeydown", "onkeypress", "onkeyup", "onload", "onloadeddata",
+    "onloadedmetadata", "onloadstart", "onmousedown", "onmouseenter", "onmouseleave",
+    "onmousemove", "onmouseout", "onmouseover", "onmouseup", "onmousewheel", "onpause",
+    "onplay", "onplaying", "onprogress", "onratechange", "onreset", "onresize",
+    "onscroll", "onseeked", "onseeking", "onselect", "onshow", "onstalled",
+    "onsubmit", "onsuspend", "ontimeupdate", "ontoggle", "onvolumechange",
+    "onwaiting", "onbeforecopy", "onbeforecut", "onbeforepaste", "oncopy",
+    "oncut", "onpaste", "onsearch", "onselectstart", "onwheel", "onwebkitfullscreenchange",
+    "onwebkitfullscreenerror"],function (i,v) {
+        v = v.slice(2);
+    Quick.fn[v] = function (eventFn) {
+        return this.on(v,eventFn)
+    }
+});
+    
+    
+//===== CSS =====
+    Quick.fn.extend({
+       css:function (name, value) {
+           if( value === undefined ){     //只有一个参数
+               if( typeof name ==="string"){      //返回数据
+                   return this.get(0).style[name] || 
+                           window.getComputedStyle( this.get(0))[name];
+               }else{       //设置多个样式
+                   return this.each(function () {
+                       var that = this;
+                       Quick.each(name,function (k,v) {
+                           that.style[k] = v;
+                       });
+                   });
+               }
+           }else {              //两个参数
+               return this.each(function () {
+                   this.style[name] = value;
+               });
+           }
+       },
+
+        hasClass:function (className) {
+            return this.toArray().some(function (v,i) {
+                return v.className.split( ' ' ).indexOf( className ) >= 0
+            });
+        },
+        
+        addClass:function (className) {
+            return this.each( function () {
+                var classNameValues = this.className.trim().split( ' ' );
+
+                if ( classNameValues.indexOf( className ) == -1 ) {
+                    classNameValues.push( className );
+                }
+
+                this.className = classNameValues.join( ' ' );
+            });
+        },
+        
+        removeClass:function (className) {
+            return this.each(function () {
+                // 将 this 中的 类样式 className 去掉
+                this.className = (' ' + this.className.replace( /\s/g, '  ' ) + ' ')
+                    .replace( new RegExp( ' ' + className.trim() + ' ', 'g' ), ' ')
+                    .trim();
+            });
+        },
+
+        toggleClass: function ( className ) {
+            if ( this.hasClass( className ) ) {
+                this.removeClass( className );
+            } else {
+                this.addClass( className );
+            }
+            return this;
+        }
+        
+    });
+    
+//  属性操作....
+    
 
 
     window.Quick = window.Q = Quick;
