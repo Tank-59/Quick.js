@@ -357,11 +357,55 @@ Quick.each([
         }
         
     });
-    
-//  属性操作....
-    
+   
+// ===== 属性操作  ======
+    Quick.fn.extend({
+        attr: function (name, value) {
+            //传入，需要设
+            if (value) {
+                return this.each(function () {
+                    this.setAttribute(name, value);
+                });
+            } else {
+                //未传入，需要返回
+                return this.get(0).getAttribute(name);
+            }
+        },
+        prop: function (name, value) {
+            if (value !== undefined) {
+                return this.each(function () {
+                    this[name] = value;
+                });
+            } else {
+                return this.get(0)[name];
+            }
+        },
+    });
 
+    Quick.each({val: "value", html: "innerHTML", text: "innerText"}, function (k, v) {
+        Quick.fn[k] = function (value) {
 
+            if (value) {
+                return this.each(function () {
+                    this[v] = value;
+                });
+            } else {
+                return this.get(0)[v];
+            }
+        }
+    });
+
+//====   其他全局数据与函数等 =====
+    var loads = [];
+
+    window.onload = function () {
+        // 将数组中的 每一个 函数取出来执行
+        Quick.each(loads, function (i, v) {
+            this();
+        });
+    };
+
+   
     window.Quick = window.Q = Quick;
 
 })(window);
